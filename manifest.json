@@ -1,0 +1,15 @@
+{
+  "name": "Travel Cost 旅行记账",
+  "short_name": "Travel Cost",
+  "description": "多行程旅行记账 · 多国退税试算 · AA分摊",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#faf7ff",
+  "theme_color": "#a78bfa",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

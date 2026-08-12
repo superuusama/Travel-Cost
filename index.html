@@ -4,6 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#a78bfa">
+<link rel="manifest" href="manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Travel Cost">
+<link rel="apple-touch-icon" href="icon-180.png">
 <title>Travel Cost</title>
 <style>
 *{box-sizing:border-box}
@@ -597,6 +602,8 @@ function boot(){selPayer=P.members[0];selParts=[P.members[0]];
   document.getElementById("date").value=new Date().toISOString().slice(0,10);
   renderCats();renderCur();renderPeople();refreshTop();document.getElementById("txFx").value="";}
 boot();backupCheck();
+/* PWA 离线 */
+if("serviceWorker" in navigator){window.addEventListener("load",()=>{navigator.serviceWorker.register("sw.js").catch(()=>{});});}
 </script>
 </body>
 </html>
