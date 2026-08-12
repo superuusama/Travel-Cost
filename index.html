@@ -15,10 +15,10 @@
 body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;background:#faf7ff;color:#3d3654}
 body:before{content:"";position:fixed;inset:-120px auto auto -120px;width:280px;height:280px;background:radial-gradient(circle,rgba(167,139,250,.28),transparent 70%);z-index:-1}
 body:after{content:"";position:fixed;right:-120px;bottom:-120px;width:300px;height:300px;background:radial-gradient(circle,rgba(244,63,94,.16),transparent 70%);z-index:-1}
-.top{position:sticky;top:0;z-index:9;background:rgba(255,255,255,.78);backdrop-filter:blur(18px);border-bottom:1px solid rgba(167,139,250,.18);padding:14px 16px}
+.top{position:sticky;top:0;z-index:9;background:rgba(255,255,255,.78);backdrop-filter:blur(18px);border-bottom:1px solid rgba(167,139,250,.18);padding:calc(14px + env(safe-area-inset-top)) 16px 14px}
 .top h1{font-size:17px;margin:0;color:#5b4b8a;display:flex;justify-content:space-between;align-items:center}
-.top h1 .name{display:flex;align-items:center;gap:5px;cursor:pointer}
-.top h1 .switch{font-size:11px;color:#a78bfa;background:rgba(167,139,250,.12);padding:2px 8px;border-radius:99px}
+.top h1 .name{display:flex;align-items:center;gap:5px;cursor:pointer;padding:6px 2px;margin:-6px -2px}
+.top h1 .switch{font-size:11px;color:#a78bfa;background:rgba(167,139,250,.12);padding:4px 10px;border-radius:99px}
 .sub{margin-top:8px;font-size:12px;color:#7c6f9e;display:flex;justify-content:space-between}
 .bar{height:8px;background:rgba(167,139,250,.16);border-radius:99px;overflow:hidden;margin-top:7px}
 .fill{height:100%;width:0;background:linear-gradient(90deg,#a78bfa,#f43f5e);transition:.4s}
@@ -75,11 +75,11 @@ textarea{min-height:56px}
 .payhero .jpy{font-size:13px;opacity:.92;margin-top:4px}
 .green{color:#10b981;font-weight:800}.red{color:#f43f5e;font-weight:800}
 .warn{background:rgba(244,63,94,.1);color:#e11d48;border-radius:12px;padding:9px 11px;font-size:12px;margin-top:8px;display:none}
-.toast{position:fixed;top:78px;left:50%;transform:translateX(-50%);background:rgba(61,54,84,.92);color:#fff;padding:10px 16px;border-radius:99px;font-size:13px;display:none;z-index:99}
+.toast{position:fixed;top:calc(78px + env(safe-area-inset-top));left:50%;transform:translateX(-50%);background:rgba(61,54,84,.92);color:#fff;padding:10px 16px;border-radius:99px;font-size:13px;display:none;z-index:99}
 .toast.show{animation:pop .2s ease}
 @keyframes pop{0%{transform:translateX(-50%) scale(.9)}60%{transform:translateX(-50%) scale(1.05)}100%{transform:translateX(-50%) scale(1)}}
 .modal{position:fixed;inset:0;background:rgba(61,54,84,.33);display:none;z-index:50}
-.sheet{position:absolute;left:0;right:0;bottom:0;background:#faf7ff;border-radius:24px 24px 0 0;padding:18px 14px 24px;max-height:88vh;overflow:auto}
+.sheet{position:absolute;left:0;right:0;bottom:0;background:#faf7ff;border-radius:24px 24px 0 0;padding:18px 14px calc(24px + env(safe-area-inset-bottom));max-height:88vh;overflow:auto}
 .badge{font-size:10px;padding:2px 7px;border-radius:10px;background:rgba(244,63,94,.12);color:#e11d48;font-weight:700}
 .owe{display:flex;justify-content:space-between;align-items:center;padding:11px;border-radius:14px;background:rgba(255,255,255,.7);margin-bottom:8px;font-size:13px}
 .owe b{color:#5b4b8a}
@@ -303,7 +303,6 @@ function projTotal(pr){return pr.items.reduce((s,it)=>s+it.amt*(it.rate!=null?it
 function catIcon(n){const c=CATS.find(x=>x[0]===n);return c?c[1]:"📦";}
 function fmt(n){return Number(n).toLocaleString(undefined,{maximumFractionDigits:2});}
 function escQ(s){return String(s).replace(/'/g,"\\'");}
-/* 行程管理 */
 function openProjects(){renderProjects();document.getElementById("projModal").style.display="block";}
 function closeProjects(){document.getElementById("projModal").style.display="none";}
 function renderProjects(){
@@ -330,7 +329,6 @@ function newProject(){const p=newProj("新行程",0);STORE.projects.push(p);STOR
 function toggleArchive(id){const pr=STORE.projects.find(x=>x.id===id);pr.archived=!pr.archived;save();renderProjects();}
 function delProject(id){if(STORE.projects.length<=1)return toast("至少保留一个行程");if(!confirm("确定删除该行程？不可恢复"))return;
   STORE.projects=STORE.projects.filter(x=>x.id!==id);if(STORE.activeId===id){STORE.activeId=STORE.projects[0].id;P=STORE.projects[0];}save();boot();renderProjects();toast("已删除");}
-/* 页面切换 */
 function go(p){document.querySelectorAll(".page").forEach(x=>x.classList.remove("on"));
   document.getElementById("p-"+p).classList.add("on");
   document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("on",b.dataset.p===p));
@@ -356,7 +354,6 @@ function renderStats(){
   daysArr.forEach(([d,v])=>{de.innerHTML+=`<div class="catbar"><div class="l"><span>${d}</span><span>${fmt(v)}</span></div>
       <div class="t"><i style="width:${v/maxD*100}%"></i></div></div>`;});
 }
-/* 记账页 */
 function renderCats(){const el=document.getElementById("cats");el.innerHTML="";
   CATS.forEach(([n,ic])=>{const d=document.createElement("div");d.className="cat"+(n===selCat?" on":"");
     d.innerHTML=`<b>${ic}</b>${n}`;d.onclick=()=>{selCat=n;renderCats();};el.appendChild(d);});}
@@ -377,7 +374,6 @@ function saveExpense(){const amt=parseFloat(document.getElementById("amount").va
   P.items.push({id:Date.now(),amt,cur,rate:fx100(cur),cat:selCat,date:document.getElementById("date").value||new Date().toISOString().slice(0,10),
     payer:selPayer,parts:[...selParts],note:document.getElementById("note").value.trim()});
   save();document.getElementById("amount").value="";document.getElementById("note").value="";refreshTop();toast("已保存 ✅");}
-/* 明细页 */
 function fillFilters(){
   const fc=document.getElementById("fltCat"),fp=document.getElementById("fltPayer");
   const cv=fc.value||"",pv=fp.value||"";
@@ -410,7 +406,6 @@ function updateExpense(){const id=+document.getElementById("eId").value;const it
   it.cat=document.getElementById("eCat").value.trim()||it.cat;it.date=document.getElementById("eDate").value||it.date;
   it.note=document.getElementById("eNote").value.trim();save();closeModal();renderList();refreshTop();toast("已更新");}
 function delExpense(){const id=+document.getElementById("eId").value;P.items=P.items.filter(x=>x.id!==id);save();closeModal();renderList();refreshTop();toast("已删除");}
-/* 退税页 */
 let taxNet=0,taxCur="JPY",curBase=0,curAfterDisc=0,curPay=0,cart=[];
 function initTax(){
   const sel=document.getElementById("txCountry");
@@ -504,7 +499,6 @@ function cartToExpense(){
 function fillTax(){if(!taxNet)return toast("先填价格");go("add");
   document.getElementById("amount").value=Math.round(taxNet);
   const s=document.getElementById("cur");if(taxCur&&[...s.options].some(o=>o.value===taxCur))s.value=taxCur;updateFxHint();toast("实付已填入记账 ✅");}
-/* AA */
 function renderSplit(){if(!P.settled)P.settled=[];
   const bal={};P.members.forEach(m=>bal[m]=0);
   P.items.forEach(it=>{const main=toMain(it.amt,it.cur,it.rate),share=main/it.parts.length;
@@ -534,7 +528,6 @@ function renderSplit(){if(!P.settled)P.settled=[];
 }
 function markSettled(from,to,amt){P.settled.push({from,to,amt});save();renderSplit();toast("已标记结清 ✅");}
 function unsettle(idx){P.settled.splice(idx,1);save();renderSplit();toast("已撤销");}
-/* 设置 */
 function renderSettings(){document.getElementById("setName").value=P.name;document.getElementById("setBudget").value=P.budget;
   document.getElementById("setMain").value=P.main;renderMemChips();renderFxTable();
   document.getElementById("darkToggle").checked=document.body.classList.contains("dark");}
@@ -572,7 +565,6 @@ function saveSettings(){P.name=document.getElementById("setName").value.trim()||
   P.budget=parseFloat(document.getElementById("setBudget").value)||0;P.main=document.getElementById("setMain").value.trim().toUpperCase()||"CNY";
   if(!P.members.includes(selPayer))selPayer=P.members[0];selParts=selParts.filter(p=>P.members.includes(p));if(!selParts.length)selParts=[P.members[0]];
   save();refreshTop();renderPeople();renderCur();toast("设置已保存 ✅");}
-/* 顶部 & 导入导出 */
 function refreshTop(){document.getElementById("tName").textContent=P.name;document.getElementById("tMain").textContent=P.main;
   const spent=P.items.reduce((s,it)=>s+toMain(it.amt,it.cur,it.rate),0);
   document.getElementById("tSpent").textContent=`已花 ${fmt(spent)} ${P.main}`;
@@ -594,15 +586,12 @@ function importJson(e){const f=e.target.files[0];if(!f)return;const r=new FileRe
   }catch(x){toast("文件格式错误");}};r.readAsText(f);}
 function clearAll(){if(confirm("确定清空全部行程和数据？不可恢复")){localStorage.removeItem("te_store");localStorage.removeItem("te_store_bak");localStorage.removeItem("te_v3");
   STORE={activeId:null,projects:[newProj("我的旅行",0)]};STORE.activeId=STORE.projects[0].id;P=STORE.projects[0];save();boot();toast("已清空");}}
-/* 深色模式 */
 function toggleDark(on){document.body.classList.toggle("dark",on);localStorage.setItem("te_dark",on?"1":"0");}
 if(localStorage.getItem("te_dark")==="1")document.body.classList.add("dark");
-/* 启动 */
 function boot(){selPayer=P.members[0];selParts=[P.members[0]];
   document.getElementById("date").value=new Date().toISOString().slice(0,10);
   renderCats();renderCur();renderPeople();refreshTop();document.getElementById("txFx").value="";}
 boot();backupCheck();
-/* PWA 离线 */
 if("serviceWorker" in navigator){window.addEventListener("load",()=>{navigator.serviceWorker.register("sw.js").catch(()=>{});});}
 </script>
 </body>
